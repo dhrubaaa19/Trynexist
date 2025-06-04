@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>District by Zomato</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-white font-sans">
+
+  <!-- Background Image/Video -->
+  <div class="relative w-full h-screen">
+    <img src="your-bg-image.jpg" alt="background" class="absolute inset-0 w-full h-full object-cover z-0" />
+
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-black/40 z-10"></div>
+
+    <!-- Login Section Only -->
+    <div class="relative z-20 flex flex-col justify-end h-full px-6 pb-10 text-center">
+      <!-- Login -->
+      <div class="mt-auto">
+        <h2 class="text-lg font-medium mb-4">Log in or sign up</h2>
+        <div class="flex items-center gap-2 bg-white rounded-md overflow-hidden px-2 py-3">
+          <div class="flex items-center gap-1">
+            <img src="https://flagcdn.com/in.svg" alt="India" class="w-5 h-4" />
+            <span class="text-black text-sm">+91</span>
+          </div>
+          <input type="tel" placeholder="10-digit mobile number" class="flex-1 text-black outline-none bg-transparent pl-2 text-sm" />
+        </div>
+
+        <button class="w-full mt-6 py-3 bg-gray-500 text-white rounded-md text-sm font-semibold cursor-not-allowed">
+          Continue
+        </button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
