@@ -2,38 +2,238 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>District by Zomato</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zustmeal Live</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f0f0f;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ticker-container {
+      width: 100%;
+      background: #d90000;
+      color: white;
+      overflow: hidden;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      font-size: 14px;
+      position: relative;
+      z-index: 20;
+    }
+
+    .ticker {
+      white-space: nowrap;
+      display: inline-block;
+      animation: scroll 15s linear infinite;
+      padding-left: 100%;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .stream-container {
+      position: relative;
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 16 / 9;
+      margin: 20px auto;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .live-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #ff0033;
+      color: white;
+      font-size: 13px;
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+      z-index: 10;
+    }
+
+    .live-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.6; }
+    }
+
+    .watermark {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      padding: 4px 8px;
+    }
+
+    .watermark::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(6px);
+      border-radius: 8px;
+      z-index: -1;
+    }
+
+    .watermark img {
+      height: 32px;
+      width: auto;
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .control-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      transition: background 0.2s ease;
+    }
+
+    .control-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 600px) {
+      .live-badge {
+        font-size: 12px;
+        padding: 4px 10px;
+      }
+
+      .watermark img {
+        height: 24px;
+      }
+
+      .control-btn {
+        font-size: 12px;
+        padding: 5px 8px;
+      }
+
+      .ticker-container {
+        font-size: 12px;
+        height: 30px;
+      }
+    }
+  </style>
 </head>
-<body class="bg-white text-white font-sans">
+<body>
 
-  <!-- Background Image/Video -->
-  <div class="relative w-full h-screen">
-    <img src="your-bg-image.jpg" alt="background" class="absolute inset-0 w-full h-full object-cover z-0" />
+  <div class="ticker-container">
+    <div class="ticker">Zustmeal&nbsp;&nbsp;Zustmeal&nbsp;&nbsp;Zustmeal&nbsp;&nbsp;Zustmeal&nbsp;&nbsp;Zustmeal&nbsp;&nbsp;</div>
+  </div>
 
-    <!-- Overlay -->
-    <div class="absolute inset-0 bg-black/40 z-10"></div>
+  <div class="stream-container" id="streamBox">
+    <!-- YouTube Player Placeholder -->
+    <div id="player"></div>
 
-    <!-- Login Section Only -->
-    <div class="relative z-20 flex flex-col justify-end h-full px-6 pb-10 text-center">
-      <!-- Login -->
-      <div class="mt-auto">
-        <h2 class="text-lg font-medium mb-4">Log in or sign up</h2>
-        <div class="flex items-center gap-2 bg-white rounded-md overflow-hidden px-2 py-3">
-          <div class="flex items-center gap-1">
-            <img src="https://flagcdn.com/in.svg" alt="India" class="w-5 h-4" />
-            <span class="text-black text-sm">+91</span>
-          </div>
-          <input type="tel" placeholder="10-digit mobile number" class="flex-1 text-black outline-none bg-transparent pl-2 text-sm" />
-        </div>
+    <div class="live-badge">LIVE NOW</div>
 
-        <button class="w-full mt-6 py-3 bg-gray-500 text-white rounded-md text-sm font-semibold cursor-not-allowed">
-          Continue
-        </button>
-      </div>
+    <div class="watermark">
+      <img src="your-logo-url-here.png" alt="Zustmeal Logo">
+    </div>
+
+    <div class="controls">
+      <button class="control-btn" onclick="toggleMute()">🔇 Mute / Unmute</button>
+      <button class="control-btn" onclick="toggleFullScreen()">⛶ Fullscreen</button>
     </div>
   </div>
+
+  <!-- YouTube IFrame Player API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    let player;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        videoId: 'lxNhMWNo__c',
+        playerVars: {
+          autoplay: 1,
+          mute: 1,
+          controls: 0,
+          rel: 0,
+          modestbranding: 1,
+          showinfo: 0,
+        },
+        events: {
+          onReady: onPlayerReady
+        }
+      });
+    }
+
+    function onPlayerReady(event) {
+      event.target.playVideo();
+
+      // Optional: listen to volume/mute changes
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          player.unMute();
+        }
+      });
+    }
+
+    function toggleMute() {
+      if (player.isMuted()) {
+        player.unMute();
+      } else {
+        player.mute();
+      }
+    }
+
+    function toggleFullScreen() {
+      const elem = document.getElementById("streamBox");
+      if (!document.fullscreenElement) {
+        elem.requestFullscreen().catch(err => console.log(err));
+      } else {
+        document.exitFullscreen();
+      }
+    }
+  </script>
 
 </body>
 </html>
