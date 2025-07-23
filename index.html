@@ -1,238 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Zustmeal Live</title>
+  <meta charset="UTF-8">
+  <title>Barcode Scanner with Beep</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
     body {
       margin: 0;
       padding: 0;
-      background: #0f0f0f;
-      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #e3f2fd, #bbdefb);
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
+      min-height: 100vh;
     }
-
-    .ticker-container {
+    .scanner-wrapper {
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    #reader {
       width: 100%;
-      background: #d90000;
-      color: white;
-      overflow: hidden;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      font-size: 14px;
-      position: relative;
-      z-index: 20;
-    }
-
-    .ticker {
-      white-space: nowrap;
-      display: inline-block;
-      animation: scroll 15s linear infinite;
-      padding-left: 100%;
-    }
-
-    @keyframes scroll {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
-
-    .stream-container {
-      position: relative;
-      width: 100%;
-      max-width: 960px;
-      aspect-ratio: 16 / 9;
-      margin: 20px auto;
       border-radius: 12px;
       overflow: hidden;
-      background: #000;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
     }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .live-badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: #ff0033;
-      color: white;
-      font-size: 13px;
+    .result-box {
+      margin-top: 20px;
+      background: #ffffff;
+      border: 2px dashed #1976d2;
+      padding: 15px;
+      border-radius: 12px;
+      color: #1976d2;
+      font-size: 18px;
       font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 50px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
-      z-index: 10;
+      min-height: 50px;
     }
-
-    .live-badge::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background: white;
-      border-radius: 50%;
-      animation: pulse 1s infinite;
+    h1 {
+      color: #0d47a1;
+      font-size: 24px;
+      margin-bottom: 10px;
     }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.5); opacity: 0.6; }
-    }
-
-    .watermark {
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      padding: 4px 8px;
-    }
-
-    .watermark::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(6px);
-      border-radius: 8px;
-      z-index: -1;
-    }
-
-    .watermark img {
-      height: 32px;
-      width: auto;
-    }
-
-    .controls {
-      position: absolute;
-      bottom: 12px;
-      left: 12px;
-      display: flex;
-      gap: 10px;
-      z-index: 10;
-    }
-
-    .control-btn {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 14px;
-      cursor: pointer;
-      backdrop-filter: blur(5px);
-      transition: background 0.2s ease;
-    }
-
-    .control-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    @media (max-width: 600px) {
-      .live-badge {
-        font-size: 12px;
-        padding: 4px 10px;
-      }
-
-      .watermark img {
-        height: 24px;
-      }
-
-      .control-btn {
-        font-size: 12px;
-        padding: 5px 8px;
-      }
-
-      .ticker-container {
-        font-size: 12px;
-        height: 30px;
-      }
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #555;
     }
   </style>
 </head>
 <body>
 
-  <div class="ticker-container">
-    <div class="ticker">Zustmeal&nbsp;&nbsp;Zustmeal&nbsp;&nbsp;Zustmeal&nbsp;&nbsp;Zustmeal&nbsp;&nbsp;Zustmeal&nbsp;&nbsp;</div>
+  <div class="scanner-wrapper">
+    <h1>Scan Barcode</h1>
+    <div id="reader"></div>
+    <div class="result-box" id="barcode-result">Waiting for scan...</div>
+    <div class="footer">Powered by Html5-QRCode</div>
   </div>
 
-  <div class="stream-container" id="streamBox">
-    <!-- YouTube Player Placeholder -->
-    <div id="player"></div>
-
-    <div class="live-badge">LIVE NOW</div>
-
-    <div class="watermark">
-      <img src="your-logo-url-here.png" alt="Zustmeal Logo">
-    </div>
-
-    <div class="controls">
-      <button class="control-btn" onclick="toggleMute()">🔇 Mute / Unmute</button>
-      <button class="control-btn" onclick="toggleFullScreen()">⛶ Fullscreen</button>
-    </div>
-  </div>
-
-  <!-- YouTube IFrame Player API -->
-  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
-    let player;
+    // Create beep sound using Web Audio API
+    function beep() {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
 
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
-        videoId: 'lxNhMWNo__c',
-        playerVars: {
-          autoplay: 1,
-          mute: 1,
-          controls: 0,
-          rel: 0,
-          modestbranding: 1,
-          showinfo: 0,
-        },
-        events: {
-          onReady: onPlayerReady
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(1000, ctx.currentTime); // 1kHz
+      gainNode.gain.setValueAtTime(0.1, ctx.currentTime); // soft beep
+
+      oscillator.start();
+      oscillator.stop(ctx.currentTime + 0.1); // play for 100ms
+    }
+
+    let lastScanned = "";
+
+    const scanner = new Html5Qrcode("reader");
+
+    scanner.start(
+      { facingMode: "environment" },
+      {
+        fps: 10,
+        qrbox: { width: 250, height: 150 }
+      },
+      (decodedText, decodedResult) => {
+        if (decodedText !== lastScanned) {
+          lastScanned = decodedText;
+          document.getElementById("barcode-result").textContent = decodedText;
+          beep();
         }
-      });
-    }
-
-    function onPlayerReady(event) {
-      event.target.playVideo();
-
-      // Optional: listen to volume/mute changes
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-          player.unMute();
-        }
-      });
-    }
-
-    function toggleMute() {
-      if (player.isMuted()) {
-        player.unMute();
-      } else {
-        player.mute();
+      },
+      (errorMessage) => {
+        // Ignore errors
       }
-    }
-
-    function toggleFullScreen() {
-      const elem = document.getElementById("streamBox");
-      if (!document.fullscreenElement) {
-        elem.requestFullscreen().catch(err => console.log(err));
-      } else {
-        document.exitFullscreen();
-      }
-    }
+    );
   </script>
 
 </body>
